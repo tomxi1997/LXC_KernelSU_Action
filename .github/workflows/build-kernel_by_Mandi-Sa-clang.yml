@@ -76,6 +76,11 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
         mkdir clang
+        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 20 ]; then
+             wget -O clang20.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm_static-20/llvm20.0.0-binutils2.43.1_amd64-kernel-arm_static-20241208.7z
+             7z x clang29.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
+        fi
+
         if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 19 ]; then
              wget -O clang19.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-19/llvm19.0.0-binutils2.42.50_amd64-kernel-arm_20240218.7z
              7z x clang19.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
