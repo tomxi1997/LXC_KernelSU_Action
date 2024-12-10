@@ -75,6 +75,11 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
         mkdir zyc-clang
+        if [ ${{ env.ZYC_CLANG_VERSION }} = 20 ]; then
+             wget -O clang20.tar.gz https://github.com/ZyCromerZ/Clang/releases/download/20.0.0git-20241209-release/Clang-20.0.0git-20241209.tar.gz
+             tar -C zyc-clang/ -xf clang20.tar.gz
+        fi
+        
         if [ ${{ env.ZYC_CLANG_VERSION }} = 19 ]; then
              wget -O clang19.tar.gz https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240221-release/Clang-19.0.0git-20240221.tar.gz
              tar -C zyc-clang/ -xf clang19.tar.gz
