@@ -76,23 +76,28 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
         mkdir clang
+        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 20 ]; then
+             wget -O clang20.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm_static-20/llvm20.0.0-binutils2.43.1_amd64-kernel-arm_static-20241208.7z
+             7z x clang20.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
+        fi
+        
         if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 19 ]; then
-             wget -O clang19.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-19/llvm19.0.0-binutils2.42.50_amd64-kernel-arm_20240218.7z
+             wget -O clang19.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm_static-19/llvm19.0.0-binutils2.42_amd64-kernel-arm_static-20240714.7z
              7z x clang19.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
         fi
         
         if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 18 ]; then
-             wget -O clang18.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-18/llvm18.0.0-binutils2.41.50_amd64-kernel-arm_20230726.7z
+             wget -O clang18.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-18/llvm18.0.0-binutils2.41.50_amd64-kernel-arm_20240128.7z
              7z x clang18.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
         fi
         
         if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 17 ]; then
-             wget -O clang17.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-17/llvm17.0.0-binutils2.40.50_amd64-kernel-arm_20230127.7z
+             wget -O clang17.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-17/llvm17.0.0-binutils2.41.50_amd64-kernel-arm-20230719.7z
              7z x clang17.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
         fi
 
         if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 16 ]; then
-             wget -O clang16.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-16/llvm16.0.0-binutils2.39.50_amd64-kernel-arm_20220826.7z
+             wget -O clang16.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-16/llvm16.0.0-binutils2.40.50_amd64-kernel-arm_20230120.7z
              7z x clang16.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
         fi
 
@@ -112,6 +117,10 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
         git clone ${{ env.KERNEL_SOURCE }} -b ${{ env.KERNEL_SOURCE_BRANCH }} android-kernel --depth=1
+        cd android-kernel
+        git submodule init
+        git submodule update
+        cd ..
 
     - name: Download source boot image
       if: env.BUILD_BOOT_IMG == 'true'
@@ -166,7 +175,7 @@ jobs:
         echo "# CONFIG_ANDROID_PARANOID_NETWORK is not set" >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
           
         #sed -i '/CONFIG_LOCALVERSION/d' arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
-        #echo 'CONFIG_LOCALVERSION="-LXC-KernelSU-support_Pdx"' >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
+        echo 'CONFIG_LOCALVERSION="-Horizon-LXC-KernelSU-support_tomxi1997"' >> arch/${{ env.ARCH }}/configs/${{ env.KERNEL_CONFIG }}
           
         chmod +x $GITHUB_WORKSPACE/kernel_workspace/android-kernel/utils/runcpatch.sh
         if [ -f $GITHUB_WORKSPACE/kernel_workspace/android-kernel/kernel/cgroup/cgroup.c ]; then
@@ -233,9 +242,8 @@ jobs:
         sed -i 's!block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;!block=auto;!g' AnyKernel3/anykernel.sh
         sed -i 's/is_slot_device=0;/is_slot_device=auto;/g' AnyKernel3/anykernel.sh
         cp android-kernel/out/arch/${{ env.ARCH }}/boot/${{ env.KERNEL_IMAGE_NAME }} AnyKernel3/
-        if [ ${{ env.CHECK_DTBO_IS_OK }} = true ]; then
-            cp android-kernel/out/arch/${{ env.ARCH }}/boot/dtbo.img AnyKernel3/
-        fi
+        cp android-kernel/out/arch/arm64/boot/dts/vendor/qcom/kona-v2.1.dtb AnyKernel3/dtb
+        cp android-kernel/out/arch/arm64/boot/dtbo.img AnyKernel3/
         rm -rf AnyKernel3/.git* AnyKernel3/README.md
 
     - name: Make boot image
