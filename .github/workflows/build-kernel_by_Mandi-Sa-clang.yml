@@ -75,36 +75,8 @@ jobs:
     - name: Download Mandi-Sa clang
       run: |
         cd $GITHUB_WORKSPACE/kernel_workspace
-        mkdir clang
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 20 ]; then
-             wget -O clang20.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm_static-20/llvm20.0.0-binutils2.43.1_amd64-kernel-arm_static-20241208.7z
-             7z x clang20.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
+        git clone https://github.com/kdrag0n/proton-clang.git clang
         
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 19 ]; then
-             wget -O clang19.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm_static-19/llvm19.0.0-binutils2.42_amd64-kernel-arm_static-20240714.7z
-             7z x clang19.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
-        
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 18 ]; then
-             wget -O clang18.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-18/llvm18.0.0-binutils2.41.50_amd64-kernel-arm_20240128.7z
-             7z x clang18.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
-        
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 17 ]; then
-             wget -O clang17.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-17/llvm17.0.0-binutils2.41.50_amd64-kernel-arm-20230719.7z
-             7z x clang17.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
-
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 16 ]; then
-             wget -O clang16.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-16/llvm16.0.0-binutils2.40.50_amd64-kernel-arm_20230120.7z
-             7z x clang16.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
-
-        if [ ${{ env.MANDI-SA_CLANG_VERSION }} = 15 ]; then                                   
-             wget -O clang15.7z https://github.com/Mandi-Sa/clang/releases/download/amd64-kernel-arm-15/llvm15.0.0-binutils2.38_amd64-kernel-arm_20220502.7z
-             7z x clang15.7z -r -o/$GITHUB_WORKSPACE/kernel_workspace/clang
-        fi
 
 
     - name: Download mkbootimg tools
